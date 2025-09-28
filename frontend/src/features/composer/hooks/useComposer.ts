@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addMessage } from "@/slices/threadsSlice";
+import { addMessage, addThread } from "@/slices/threadsSlice";
 import { generateId } from "@/imports";
 import apiClient from "@/imports/api";
 import { CHAT_STARTED, ERROR_MESSAGE } from "@/shared/utils/constant";
@@ -19,9 +19,8 @@ export const useComposer = (threadId: string = "") => {
   const [text, setText] = useState('');
   
   const toast = useToast()
-  /**
-   * Start a new chat session
-   */
+  const dispatch = useDispatch();
+
   const startChat = async (): Promise<StartChatResponse> => {
     try {
       const resp = await apiClient.post("/chat/start");
@@ -33,11 +32,6 @@ export const useComposer = (threadId: string = "") => {
     return {session_id: ''}
   };
   
-  /**
-   * Send a message to the chat
-   * @param sessionId - active session
-   * @param message - message content
-   */
   const sendMessage = async (
     sessionId: string,
     message: string
@@ -57,8 +51,6 @@ export const useComposer = (threadId: string = "") => {
   const handleChange = (value: string) => {
     setText(value)
   }
-
-  const dispatch = useDispatch();
 
   const handleSend = async (sessionId: string, text: string) => {
     if (!text.trim()) return;
@@ -88,6 +80,15 @@ export const useComposer = (threadId: string = "") => {
       })
     );
   };
+
+  const getSessionId = async () => {
+    const response = await startChat()
+    dispatch(addThread({
+      id: response.session_id,
+      messages: [],
+      children: [],
+    }));
+  }
   
 
   return {
@@ -95,5 +96,6 @@ export const useComposer = (threadId: string = "") => {
     startChat,
     handleSend,
     handleChange,
+    getSessionId,
   };
 };

@@ -20,23 +20,27 @@ const ThreadPane: React.FC<Props> = ({ threadId }) => {
   if (!thread) return <div>Thread not found</div>;
 
   return (
-    <Card style={{ marginBottom: "1rem" }}>
+    <Card className="flex-1 w-full surface-card shadow-2 border-round-lg">
       <Toolbar threadId={threadId} />
-      <h3>Thread {thread.id}</h3>
-      {isExpanded && (
-        <>
-          <div>
-            {thread.messages.map((msgId) => (
-              <ThreadItem key={msgId} messageId={msgId} />
-            ))}
-          </div>
-          <div>
-            {thread.children.map((childId) => (
-              <ThreadPane key={childId} threadId={childId} />
-            ))}
-          </div>
-        </>
-      )}
+      <div className="p-3">
+        <h3 className="m-0 mb-3 text-lg font-semibold">Thread {thread.id}</h3>
+        {isExpanded && (
+          <>
+            <div className="flex flex-column gap-3">
+              {thread.messages.map((msgId) => (
+                <ThreadItem key={msgId} messageId={msgId} />
+              ))}
+            </div>
+            {thread.children.length > 0 && (
+              <div className="ml-4 mt-3 border-left-2 pl-3 border-300">
+                {thread.children.map((childId) => (
+                  <ThreadPane key={childId} threadId={childId} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </Card>
   );
 };

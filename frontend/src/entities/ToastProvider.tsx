@@ -1,6 +1,5 @@
-import React, { createContext, useRef, useMemo, ReactNode, useContext } from "react";
+import React, { createContext, useRef, useMemo, ReactNode } from "react";
 import { Toast, ToastMessage } from "primereact/toast";
-import { ConfirmDialog } from "primereact/confirmdialog";
 
 type ToastOptions = Omit<ToastMessage, "severity" | "detail">;
 
@@ -33,19 +32,21 @@ const ToastProvider: React.FC<ToastProviderProps> = ({ children, position = "top
       toastRef.current?.show(toastOptions);
     };
 
-  const contextValue = useMemo<ToastContextType>(() => ({
-    warn: show("warn"),
-    success: show("success"),
-    error: show("error"),
-    info: show("info"),
-    remove: () => toastRef.current?.clear(),
-  }), []);
+  const contextValue = useMemo<ToastContextType>(
+    () => ({
+      warn: show("warn"),
+      success: show("success"),
+      error: show("error"),
+      info: show("info"),
+      remove: () => toastRef.current?.clear(),
+    }),
+    []
+  );
 
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
       <Toast ref={toastRef} position={position} />
-      <ConfirmDialog />
     </ToastContext.Provider>
   );
 };

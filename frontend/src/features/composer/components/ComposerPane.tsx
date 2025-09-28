@@ -10,14 +10,19 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
   const {text, handleChange, handleSend} = useComposer(threadId)  
 
   return (
-    <div style={{ display: "flex", gap: "0.5rem" }}>
+    <div className="flex align-items-center gap-2 w-full">
       <InputText
         value={text}
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Type your message..."
-        style={{ flex: 1 }}
+        className="flex-1 p-inputtext-lg w-full"
       />
-      <Button label="Send" onClick={() => handleSend(threadId, text)} />
+      <Button
+        label="Send"
+        icon="pi pi-send"
+        className="p-button-rounded p-button-primary"
+        onClick={() => handleSend(threadId, text)}
+      />
     </div>
   );
 };
