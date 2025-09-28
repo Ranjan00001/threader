@@ -3,7 +3,7 @@ from routes import all_blueprints
 from utils import config, register_error_handlers
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Register routes
 for bp in all_blueprints:

@@ -2,12 +2,17 @@
 Chat routes: start chat, send message, stream responses.
 """
 
+import os
 from flask import Blueprint, request, jsonify
 from services import GeminiChatService, SessionStore, sse_response, fake_generator
+from utils.config import config
 
 chat_bp = Blueprint("chat", __name__)
 
-gemini_service = GeminiChatService()
+api_key = config.API_KEY
+model = config.MODEL
+
+gemini_service = GeminiChatService(api_key, model)
 session_store = SessionStore()
 
 

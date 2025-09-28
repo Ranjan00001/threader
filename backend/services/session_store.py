@@ -11,9 +11,9 @@ class SessionStore:
         self.sessions = {}  # {session_id: session_object}
         logger.info("SessionStore initialized")
 
-    def create_session(self, gemini_service):
+    def create_session(self, client):
         session_id = str(uuid.uuid4())
-        session = gemini_service.start_chat()
+        session = client.start_chat()
         self.sessions[session_id] = session
         logger.info(f"Created new session {session_id}")
         return session_id, session

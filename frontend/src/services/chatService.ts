@@ -25,6 +25,6 @@ export const sendMessage = async (
   sessionId: string,
   message: string
 ): Promise<SendMessageResponse> => {
-  const resp = await apiClient.post(`/chat/${sessionId}/send`, { message });
+  const resp = await apiClient.post(`/chat/send/${sessionId}`, { message });
   return resp.data;
 };

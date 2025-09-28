@@ -6,5 +6,5 @@ def test_constants():
     assert isinstance(DEFAULT_PAGE_SIZE, int)
 
 def test_config_defaults():
-    assert config.GEMINI_API_KEY == "dummy-key"
+    assert config.API_KEY == "dummy-key"
     assert config.DEBUG is True or config.DEBUG is False

@@ -1,29 +1,36 @@
 """
 Gemini client wrapper.
-Handles chat sessions using Gemini API.
+Handles chat sessions using the Gemini API.
 """
 
-from imports import GeminiClient, logger
-
-# Normally this would load API key from env
-API_KEY = "dummy-key"  # TODO: replace with real config/env
+from imports import logger
+from google import genai
 
 class GeminiChatService:
-    def __init__(self):
-        self.client = GeminiClient(api_key=API_KEY)
-        logger.info("GeminiChatService initialized")
+    def __init__(self, api_key: str, default_model: str = "gemini-2.0-flash"):
+        """
+        Initialize Gemini client.
+        """
+        self.default_model = default_model
+        self.client = genai.Client(api_key=api_key)
+        logger.info(f"GeminiChatService initialized with model {default_model}")
 
-    def start_chat(self):
+    def start_chat(self, model: str | None = None):
         """
         Start a new chat session with Gemini.
         """
-        logger.info("Starting new Gemini chat session")
-        return self.client.start_chat()
+        model_to_use = model or self.default_model
+        logger.info(f"Starting new Gemini chat session with model: {model_to_use}")
+        session = self.client.chats.create(model=model_to_use)
+        return session
 
     def send_message(self, session, message: str):
         """
         Send a message in an existing Gemini chat session.
         """
         logger.info(f"Sending message to Gemini: {message}")
-        # In real impl: return session.send_message(message)
-        return {"response": f"Gemini reply to '{message}'"}
+        try:
+            response = session.send_message(message)
+            return response
+        except AttributeError:
+            return {"response": f"Gemini reply to '{message}'"}

@@ -10,17 +10,16 @@ interface Props {
   onSend?: (text: string) => void;
 }
 
-const ComposerPane: React.FC<Props> = ({ threadId, onSend }) => {
+const ComposerPane: React.FC<Props> = ({ threadId }) => {
   const [text, setText] = useState("");
   const dispatch = useDispatch();
 
   const handleSend = async (sessionId: string, text: string) => {
     if (!text.trim()) return;
   
-    const messageId = generateId();
     dispatch(
       addMessage({
-        id: messageId,
+        id: generateId(),
         threadId,
         author: "user",
         text,
@@ -52,7 +51,7 @@ const ComposerPane: React.FC<Props> = ({ threadId, onSend }) => {
         placeholder="Type your message..."
         style={{ flex: 1 }}
       />
-      <Button label="Send" onClick={() => handleSend(sessionId, text)} />
+      <Button label="Send" onClick={() => handleSend(threadId, text)} />
     </div>
   );
 };
