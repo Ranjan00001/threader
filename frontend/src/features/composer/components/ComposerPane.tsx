@@ -1,54 +1,19 @@
 import React, { useState } from "react";
 import { InputText, Button } from "@/imports";
-import { useDispatch } from "@/imports";
-import { addMessage } from "@/slices/threadsSlice";
-import { generateId } from "@/imports";
-import { sendMessage } from "@/services/chatService";
+import { useComposer } from "../hooks/useComposer";
 
 interface Props {
   threadId: string;
-  onSend?: (text: string) => void;
 }
 
 const ComposerPane: React.FC<Props> = ({ threadId }) => {
-  const [text, setText] = useState("");
-  const dispatch = useDispatch();
-
-  const handleSend = async (sessionId: string, text: string) => {
-    if (!text.trim()) return;
-  
-    dispatch(
-      addMessage({
-        id: generateId(),
-        threadId,
-        author: "user",
-        text,
-        createdAt: new Date().toISOString(),
-      })
-    );
-  
-    setText("");
-  
-    // Add backend call here
-    const response = await sendMessage(sessionId, text);
-    console.log(response)
-    dispatch(
-      addMessage({
-        id: generateId(),
-        threadId,
-        author: "assistant",
-        text: response.response,
-        createdAt: new Date().toISOString(),
-      })
-    );
-  };
-  
+  const {text, handleChange, handleSend} = useComposer(threadId)  
 
   return (
     <div style={{ display: "flex", gap: "0.5rem" }}>
       <InputText
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
         placeholder="Type your message..."
         style={{ flex: 1 }}
       />
