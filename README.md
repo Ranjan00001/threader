@@ -58,7 +58,7 @@ utils/           # config, logging
 
 ---
 
-## 📦 Data Model
+## Data Model
 
 ### Thread
 ```ts
@@ -143,7 +143,7 @@ flask run --reload
 
 ---
 
-## 🧭 Roadmap
+## Roadmap
 
 * [ ] Export chats as JSON/Markdown
 * [ ] Presence + multi-user support (WebSockets)
@@ -152,10 +152,7 @@ flask run --reload
 
 ---
 
-## 📝 License
+## License
 
 MIT
 ---
-
-Would you like me to also generate a **CONTRIBUTING.md** with coding guidelines (folder naming, imports pattern, commit style), or keep README.md as the main source of truth?
-```
