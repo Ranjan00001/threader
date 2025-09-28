@@ -1,0 +1,35 @@
+{
+    "name": "conversation-app-frontend",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "webpack serve --mode development --open",
+        "build": "webpack --mode production",
+        "lint": "eslint ./src --ext .ts,.tsx",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "^1.9.5",
+        "axios": "^1.6.0",
+        "primeflex": "^4.0.0",
+        "primeicons": "^7.0.0",
+        "primereact": "^9.6.5",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-redux": "^8.1.1"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.7",
+        "@types/react-dom": "^18.2.4",
+        "css-loader": "^6.9.3",
+        "eslint": "^8.47.0",
+        "html-webpack-plugin": "^5.5.3",
+        "jest": "^29.7.0",
+        "style-loader": "^3.3.3",
+        "ts-loader": "^9.4.4",
+        "typescript": "^5.2.2",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^4.15.1"
+    }
+}
