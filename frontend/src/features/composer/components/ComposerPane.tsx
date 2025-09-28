@@ -31,6 +31,7 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
   
     // Add backend call here
     const response = await sendMessage(sessionId, text);
+    console.log(response)
     dispatch(
       addMessage({
         id: generateId(),

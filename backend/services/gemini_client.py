@@ -31,6 +31,10 @@ class GeminiChatService:
         logger.info(f"Sending message to Gemini: {message}")
         try:
             response = session.send_message(message)
-            return response
+            logger.info(response)
+            return {"response": response.text}
         except AttributeError:
-            return {"response": f"Gemini reply to '{message}'"}
+            return {"response": f"Could not get reply for the query => '{message}'"}
+        except:
+            logger.error("Something went wrong!")
+            return {"response": "Error at our side!"}

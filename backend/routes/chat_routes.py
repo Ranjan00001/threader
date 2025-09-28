@@ -34,6 +34,7 @@ def send_message(session_id):
     message = data.get("message", "")
 
     session = session_store.get_session(session_id)
+    print(session, message, '------------------------------------------')
     if not session:
         return jsonify({"error": "Session not found"}), 404
 
