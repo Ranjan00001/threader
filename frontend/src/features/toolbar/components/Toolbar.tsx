@@ -15,9 +15,14 @@ const Toolbar: React.FC<Props> = ({ threadId }) => {
   };
 
   return (
-    <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
-      <Button label="Toggle Thread" onClick={handleToggle} />
-      {/* Add more buttons here, like "Collapse All", "Expand All", "New Thread" */}
+    <div className="flex align-items-center gap-2 mb-3">
+      <Button
+        label="Toggle Thread"
+        icon="pi pi-exchange"
+        className="p-button-text p-button-sm"
+        onClick={handleToggle}
+      />
+      {/* Future: Collapse All, Expand All, New Thread */}
     </div>
   );
 };
