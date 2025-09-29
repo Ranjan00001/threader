@@ -3,17 +3,16 @@ import { Card } from "@/imports";
 import ThreadItem from "./ThreadItem";
 import { useThread } from "../hooks/useThread";
 import { Toolbar } from "@/features/toolbar";
-import { useSelector as useReduxSelector } from "react-redux";
-import { ThreadsState } from "@/slices/threadsSlice";
+import { useSelector } from "react-redux";
 
 interface Props {
   threadId: string;
 }
 
 const ThreadPane: React.FC<Props> = ({ threadId }) => {
-  const thread = useThread(threadId);
+  const {thread} = useThread(threadId);
 
-  const isExpanded = useReduxSelector(
+  const isExpanded = useSelector(
     (state: { threadLocal: { isExpanded: boolean } }) => state.threadLocal.isExpanded
   );
 

@@ -1,0 +1,92 @@
+import React, { ReactNode, useState } from "react";
+import { Menubar, Sidebar, Button } from "@/imports";
+import { items } from "@/shared/utils/constant";
+
+interface LayoutProps {
+    headerTitle?: string;
+    sidebarContent?: ReactNode;
+    footer?: ReactNode;
+    children: ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({
+    headerTitle = "Threader",
+    sidebarContent,
+    footer,
+    children,
+}) => {
+    const [sidebarVisible, setSidebarVisible] = useState(false); // mobile sidebar
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // desktop collapse
+
+    const toggleSidebarDesktop = () => {
+        setSidebarCollapsed((prev) => !prev);
+    };
+
+    const start = (
+        <div className="flex align-items-center gap-2">
+            {/* Mobile toggle (overlay) */}
+            <Button
+                icon="pi pi-bars"
+                className="p-button-text p-button-plain md:hidden"
+                onClick={() => setSidebarVisible(true)}
+            />
+
+            {/* Desktop toggle (collapse/expand) */}
+            <Button
+                icon={sidebarCollapsed ? "pi pi-angle-right" : "pi pi-angle-left"}
+                className="p-button-text p-button-plain hidden md:flex"
+                onClick={toggleSidebarDesktop}
+            />
+        </div>
+    );
+
+    return (
+        <div className="flex flex-column h-screen surface-ground text-color">
+            {/* Header / Menubar */}
+            <Menubar start={start} model={items} className="shadow-1 surface-card">
+                <span className="font-bold ml-2">{headerTitle}</span>
+            </Menubar>
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Desktop Sidebar (collapsible) */}
+                {sidebarContent && (
+                    <aside
+                        className={`hidden md:flex flex-column surface-card border-right-1 border-300 transition-all transition-duration-300 ${sidebarCollapsed ? "w-4rem" : "w-16rem p-3"
+                            } overflow-y-auto`}
+                    >
+                        {!sidebarCollapsed && (
+                            <>
+                                <h4 className="mb-3 text-sm text-500">Chat History</h4>
+                                {sidebarContent}
+                            </>
+                        )}
+                    </aside>
+                )}
+
+                {/* Mobile Sidebar (overlay) */}
+                <Sidebar
+                    visible={sidebarVisible}
+                    onHide={() => setSidebarVisible(false)}
+                    modal
+                    dismissable
+                    className="w-16rem"
+                >
+                    <h4 className="mb-3 text-sm text-500">Chat History</h4>
+                    {sidebarContent}
+                </Sidebar>
+
+                {/* Main Content */}
+                <main className="flex-1 overflow-y-auto p-3">{children}</main>
+            </div>
+
+            {/* Footer */}
+            {footer && (
+                <footer className="surface-card border-top-1 border-300 shadow-1 p-3">
+                    {footer}
+                </footer>
+            )}
+        </div>
+    );
+};
+
+export default Layout;
