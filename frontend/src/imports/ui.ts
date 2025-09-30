@@ -10,6 +10,10 @@ export { Accordion, AccordionTab } from "primereact/accordion";
 export { Dialog } from "primereact/dialog";
 export { Menubar } from "primereact/menubar";
 export { Sidebar } from "primereact/sidebar";
+export { InputTextarea } from "primereact/inputtextarea";
+export { Toolbar } from "primereact/toolbar";
+export { Toast } from "primereact/toast";
+export { ProgressSpinner } from "primereact/progressspinner";
 
 // PrimeFlex CSS utilities
 import "primeflex/primeflex.css";

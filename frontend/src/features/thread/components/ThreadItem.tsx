@@ -18,18 +18,14 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
 
   return (
     <div
-      className={`flex w-full mb-3 ${
-        isUser ? "justify-content-end" : "justify-content-start"
-      }`}
+      className={`flex w-full mb-3 ${isUser ? "justify-content-end" : "justify-content-start"
+        }`}
     >
       <div
-        className={`p-3 border-round-lg shadow-1 max-w-30rem whitespace-pre-wrap markdown-body ${
-          isUser
-            ? "bg-primary text-primary-contrast"
-            : "surface-card text-color"
-        }`}
+        className={`px-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap markdown-body`}
+        style={{ backgroundColor: isUser ? "lavenderblush" : "mintcream" }}
       >
-        <small className="block mb-1 font-medium opacity-70">
+        <small className="block my-1 font-medium opacity-70">
           {message.author}
         </small>
         <ReactMarkdown>{message.text}</ReactMarkdown>

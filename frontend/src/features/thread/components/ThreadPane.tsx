@@ -10,7 +10,7 @@ interface Props {
 }
 
 const ThreadPane: React.FC<Props> = ({ threadId }) => {
-  const {thread} = useThread(threadId);
+  const { thread } = useThread(threadId);
 
   const isExpanded = useSelector(
     (state: { threadLocal: { isExpanded: boolean } }) => state.threadLocal.isExpanded
@@ -19,13 +19,13 @@ const ThreadPane: React.FC<Props> = ({ threadId }) => {
   if (!thread) return <div>Thread not found</div>;
 
   return (
-    <Card className="flex-1 w-full surface-card shadow-2 border-round-lg">
+    <Card className="flex-1 w-full surface-card shadow-2 border-round-lg mb-8">
       <Toolbar threadId={threadId} />
       <div className="p-3">
         <h3 className="m-0 mb-3 text-lg font-semibold">Thread {thread.id}</h3>
         {isExpanded && (
           <>
-            <div className="flex flex-column gap-3">
+            <div className="flex flex-column">
               {thread.messages.map((msgId) => (
                 <ThreadItem key={msgId} messageId={msgId} />
               ))}

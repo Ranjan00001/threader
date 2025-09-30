@@ -47,7 +47,7 @@ const Layout: React.FC<LayoutProps> = ({
                 <span className="font-bold ml-2">{headerTitle}</span>
             </Menubar>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex overflow-hidden">
                 {/* Desktop Sidebar (collapsible) */}
                 {sidebarContent && (
                     <aside
@@ -76,7 +76,7 @@ const Layout: React.FC<LayoutProps> = ({
                 </Sidebar>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-y-auto p-3">{children}</main>
+                <main className="flex-1 p-3">{children}</main>
             </div>
 
             {/* Footer */}
