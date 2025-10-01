@@ -1,4 +1,3 @@
-export { default as Toolbar } from "./components/Toolbar";
+export { default as Toolbar } from "./components/SelectionToolbar";
 export * from "./hooks/useToolbar";
-export * from "./store/toolbarSlice";
-export * from "./utils/helpers";
+export * from "../../slices/toolbarSlice";

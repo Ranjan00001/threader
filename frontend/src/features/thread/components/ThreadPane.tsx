@@ -4,6 +4,7 @@ import ThreadItem from "./ThreadItem";
 import { useThread } from "../hooks/useThread";
 import { Toolbar } from "@/features/toolbar";
 import { useSelector } from "react-redux";
+import { Tooltip } from "primereact/tooltip";
 
 interface Props {
   threadId: string;
@@ -20,9 +21,10 @@ const ThreadPane: React.FC<Props> = ({ threadId }) => {
 
   return (
     <Card className="flex-1 w-full surface-card shadow-2 border-round-lg mb-8">
-      <Toolbar threadId={threadId} />
-      <div className="p-3">
-        <h3 className="m-0 mb-3 text-lg font-semibold">Thread {thread.id}</h3>
+      {/* <Toolbar threadId={threadId} /> */}
+      <div className="">
+        <span className={`pi pi-info-circle text-500 cursor-pointer`} id={`thread-info-${thread.id}`} />
+        <Tooltip target={`#thread-info-${thread.id}`} content={`Thread ID: ${thread.id}`} position="top" />
         {isExpanded && (
           <>
             <div className="flex flex-column">

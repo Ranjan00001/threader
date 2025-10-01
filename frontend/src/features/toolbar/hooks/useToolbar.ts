@@ -1,5 +1,5 @@
 import { useDispatch } from "@/imports";
-import { toggleExpanded } from "@/features/thread/store/threadLocalSlice";
+import { toggleExpanded } from "@/slices/threadLocalSlice";
 
 export const useToolbar = () => {
   const dispatch = useDispatch();

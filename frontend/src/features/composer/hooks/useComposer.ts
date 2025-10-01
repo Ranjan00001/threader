@@ -85,13 +85,23 @@ export const useComposer = (threadId: string = "") => {
 
   const getSessionId = async () => {
     const response = await startChat();
+    const {session_id = ''} = response;
     dispatch(
       addThread({
-        id: response.session_id,
+        id: session_id,
         messages: [],
         children: [],
       })
     );
+    dispatch(
+      addMessage({
+        id: '000',
+        threadId: session_id,
+        author: "assistant",
+        text: "Hi there! How can I help you today?",
+        createdAt: new Date().toISOString(),
+      })
+    )
   };
 
   return {
