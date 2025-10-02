@@ -5,6 +5,7 @@ import SelectableMarkdown from "@/entities/SelectableMarkdown";
 import SelectionToolbar from "@/features/toolbar/components/SelectionToolbar";
 import { useThread } from "../hooks/useThread";
 import { useChat } from "@/entities/ChatProvider";
+import ErrorBoundary from "@/entities/ErrorBoundary";
 interface Props {
   messageId: string;
 }
@@ -30,7 +31,7 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
 
   if (!message) return null;
 
-  return <>
+  return <ErrorBoundary>
     {selectionInfo && (
       <SelectionToolbar
         x={selectionInfo.x}
@@ -63,7 +64,7 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
         />
       </div>
     </div>
-  </>;
+  </ErrorBoundary>;
 };
 
 export default ThreadItem;

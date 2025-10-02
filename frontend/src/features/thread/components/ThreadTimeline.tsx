@@ -6,9 +6,10 @@ import ThreadItem from "./ThreadItem";
 
 interface Props {
     threadId: string;
+    depth?: number; // optional, for styling/indentation
 }
 
-const ThreadTimeline: React.FC<Props> = ({ threadId }) => {
+const ThreadTimeline: React.FC<Props> = ({ threadId, depth = 0 }) => {
     const thread = useSelector((state: RootState) => state.threads.threadsById[threadId]);
     const messages = useSelector((state: RootState) =>
         thread?.messages.map((msgId) => state.threads.messagesById[msgId]) || []
@@ -17,12 +18,28 @@ const ThreadTimeline: React.FC<Props> = ({ threadId }) => {
     if (!thread) return null;
 
     return (
-        <Timeline
-            value={messages}
-            align="left"
-            className="custom-timeline"
-            content={(msg) => <ThreadItem messageId={msg.id} />}
-        />
+        <div className={`ml-${depth * 4}` /* increase indentation for depth */}>
+            <Timeline
+                value={messages}
+                align="left"
+                className="custom-timeline"
+                content={(msg) => (
+                    <div>
+                        <ThreadItem messageId={msg.id} />
+
+                        {/* Recursively render child threads */}
+                        {msg.metadata?.childrenThreads?.length > 0 &&
+                            msg.metadata.childrenThreads.map((childThreadId: string) => (
+                                <ThreadTimeline
+                                    key={childThreadId}
+                                    threadId={childThreadId}
+                                    depth={depth + 1}
+                                />
+                            ))}
+                    </div>
+                )}
+            />
+        </div>
     );
 };
 

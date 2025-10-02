@@ -1,9 +1,9 @@
-import { createThreadWithMessage, ThreadsState } from "@/imports";
-import apiClient from "@/imports/api";
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { createThreadWithMessage, addMessage, generateId } from "@/imports";
+import apiClient from "@/imports/api";
 
-// Types for clarity
+// ----------------- Types -----------------
 interface Message {
     id: string;
     threadId: string;
@@ -16,6 +16,9 @@ interface Message {
 
 interface CreateThreadResponse {
     thread_id: string;
+    response: string; // assistant reply for new thread
+    parentThreadId: string;
+    query: string;
 }
 
 interface ChatContextType {
@@ -28,18 +31,15 @@ interface ChatContextType {
     activeMessage?: Message;
     setActiveMessage: (msg?: Message) => void;
 
-    messages: Record<string, Message[]>; // threadId -> list of messages
-    addMessage: (threadId: string, msg: Message) => void;
-    clearMessages: (threadId: string) => void;
-
     handleCreateThread: (
         query: string,
-        id: string,
-        context?: string,
-        text?: string
+        parentThreadId: string,
+        text?: string,
+        context?: string
     ) => Promise<string>;
 }
 
+// ----------------- Context -----------------
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: ReactNode }) => {
@@ -49,27 +49,12 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const [activeThreadId, setActiveThreadId] = useState<string>();
     const [activeMessage, setActiveMessage] = useState<Message>();
 
-    const [messages, setMessages] = useState<Record<string, Message[]>>({});
-
-    const addMessage = (threadId: string, msg: Message) => {
-        setMessages((prev) => ({
-            ...prev,
-            [threadId]: [...(prev[threadId] || []), msg],
-        }));
-    };
-
-    const clearMessages = (threadId: string) => {
-        setMessages((prev) => ({
-            ...prev,
-            [threadId]: [],
-        }));
-    };
-
+    // ----------------- API call -----------------
     const createThread = async (
         parentThreadId: string,
         query: string,
         selectedText?: string,
-        context?: string,
+        context?: string
     ): Promise<CreateThreadResponse> => {
         const resp = await apiClient.post("/thread/create", {
             parentThreadId,
@@ -80,29 +65,54 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         return resp.data;
     };
 
+    // ----------------- Handler -----------------
     const handleCreateThread = async (
         query: string,
-        id: string,
+        parentThreadId: string,
         text: string | undefined = selectedText,
-        context: string | undefined = activeMessage?.text,
-    ) => {
-        console.log("Creating new thread from thread:", id);
-        const response = await createThread(id, query, text, context);
-        const newThreadId = response.thread_id;
-        console.log("Created thread with ID:", newThreadId);
+        context: string | undefined = activeMessage?.text
+    ): Promise<string> => {
+        if (!text) {
+            throw new Error("No text selected to create a thread from.");
+        }
+
+        // Call backend to create thread
+        const resp = await createThread(parentThreadId, query, text, context);
+        const { thread_id, response } = resp;
+
+        // Dispatch new thread with initial user message
+        const userMessageId = generateId();
         dispatch(
             createThreadWithMessage({
-                threadId: newThreadId,
+                threadId: thread_id,
                 initialMessage: {
-                    id: `${id}-${newThreadId}`,
-                    threadId: newThreadId,
-                    author: "assistant",
-                    text: "Hi there! How can I help you today?",
+                    id: userMessageId,
+                    threadId: thread_id,
+                    author: "user",
+                    text: `"${text}" - ${query}`,
                     createdAt: new Date().toISOString(),
                 },
+                parentMessageId: activeMessage?.id, // attach as child to selected message
+                parentThreadId, // optional, original thread
             })
         );
-        return newThreadId;
+
+        // Dispatch assistant's reply to the new thread
+        const assistantMessageId = generateId();
+        dispatch(
+            addMessage({
+                id: assistantMessageId,
+                threadId: thread_id,
+                author: "assistant",
+                text: response,
+                createdAt: new Date().toISOString(),
+            })
+        );
+
+        // Clear selected text
+        setSelectedText(undefined);
+
+        return thread_id;
     };
 
     return (
@@ -114,9 +124,6 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
                 setActiveThreadId,
                 activeMessage,
                 setActiveMessage,
-                messages,
-                addMessage,
-                clearMessages,
                 handleCreateThread,
             }}
         >
@@ -125,7 +132,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// Hook to consume context
+// ----------------- Hook -----------------
 export const useChat = () => {
     const ctx = useContext(ChatContext);
     if (!ctx) {

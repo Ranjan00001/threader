@@ -7,15 +7,17 @@ export interface Message {
   author: "user" | "assistant" | "system";
   text: string;
   createdAt: string;
-  metadata?: any;
+  metadata?: {
+    childrenThreads?: string[]; // NEW: child threads per message
+    [key: string]: any;
+  };
 }
 
 export interface Thread {
   id: string;
   parentThreadId?: string;
-  originMessageId?: string;
-  messages: string[]; // message IDs
-  children: string[]; // nested threads
+  originMessageId?: string; // message that spawned this thread
+  messages: string[];
 }
 
 export interface ThreadsState {
@@ -39,9 +41,6 @@ const threadsSlice = createSlice({
       const thread = action.payload;
       state.threadsById[thread.id] = thread;
       state.allThreadIds.push(thread.id);
-      if (thread.parentThreadId) {
-        state.threadsById[thread.parentThreadId].children.push(thread.id);
-      }
     },
     addMessage: (state, action: PayloadAction<Message>) => {
       const msg = action.payload;
@@ -54,22 +53,36 @@ const threadsSlice = createSlice({
     },
     createThreadWithMessage: (
       state,
-      action: PayloadAction<{ threadId: string; initialMessage: Message }>
+      action: PayloadAction<{
+        threadId: string;
+        initialMessage: Message;
+        parentMessageId?: string;
+        parentThreadId?: string;
+      }>
     ) => {
-      const { threadId, initialMessage } = action.payload;
+      const { threadId, initialMessage, parentMessageId, parentThreadId } = action.payload;
 
-      // create thread
+      // Create the new thread
       state.threadsById[threadId] = {
         id: threadId,
+        parentThreadId,
+        originMessageId: parentMessageId,
         messages: [initialMessage.id],
-        children: [],
       };
       state.allThreadIds.push(threadId);
 
-      // add initial message
+      // Add initial message
       state.messagesById[initialMessage.id] = initialMessage;
 
-      // expand new thread
+      // Attach child thread to parent message if provided
+      if (parentMessageId) {
+        const parentMsg = state.messagesById[parentMessageId];
+        if (!parentMsg.metadata) parentMsg.metadata = {};
+        if (!parentMsg.metadata.childrenThreads) parentMsg.metadata.childrenThreads = [];
+        parentMsg.metadata.childrenThreads.push(threadId);
+      }
+
+      // Expand new thread
       state.expandedThreadId = threadId;
     },
   },
