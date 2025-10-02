@@ -9,9 +9,9 @@ const store = configureStore({
   reducer: {
     threads: threadsReducer,
     ui: uiReducer,
-    composer: composerReducer,
-    threadLocal: threadLocalReducer,
-    messageLocal: messageLocalReducer,
+    // composer: composerReducer,
+    // threadLocal: threadLocalReducer,
+    // messageLocal: messageLocalReducer,
   },
 });
 

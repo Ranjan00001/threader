@@ -14,6 +14,7 @@ export { InputTextarea } from "primereact/inputtextarea";
 export { Toolbar } from "primereact/toolbar";
 export { Toast } from "primereact/toast";
 export { ProgressSpinner } from "primereact/progressspinner";
+export { Tooltip } from "primereact/tooltip";
 
 // PrimeFlex CSS utilities
 import "primeflex/primeflex.css";

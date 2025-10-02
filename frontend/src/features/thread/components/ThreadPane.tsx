@@ -1,10 +1,7 @@
 import React from "react";
-import { Card } from "@/imports";
+import { Card, Tooltip } from "@/imports";
 import ThreadItem from "./ThreadItem";
 import { useThread } from "../hooks/useThread";
-import { Toolbar } from "@/features/toolbar";
-import { useSelector } from "react-redux";
-import { Tooltip } from "primereact/tooltip";
 
 interface Props {
   threadId: string;
@@ -13,9 +10,7 @@ interface Props {
 const ThreadPane: React.FC<Props> = ({ threadId }) => {
   const { thread } = useThread(threadId);
 
-  const isExpanded = useSelector(
-    (state: { threadLocal: { isExpanded: boolean } }) => state.threadLocal.isExpanded
-  );
+  const isExpanded = true;
 
   if (!thread) return <div>Thread not found</div>;
 

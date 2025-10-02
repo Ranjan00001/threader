@@ -1,6 +1,5 @@
 import React from "react";
-import { Button } from "primereact/button";
-import { Card } from "primereact/card";
+import { Button } from "@/imports";
 
 interface Props {
   x: number;
