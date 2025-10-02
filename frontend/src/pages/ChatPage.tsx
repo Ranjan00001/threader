@@ -4,6 +4,7 @@ import { ComposerPane } from "@/features/composer";
 import { ThreadsState } from "@/slices/threadsSlice";
 import { useSelector } from "@/imports";
 import { useComposer } from "@/features/composer";
+import ErrorBoundary from "@/entities/ErrorBoundary";
 
 const ChatPage: React.FC = () => {
   const { getSessionId } = useComposer();
@@ -20,7 +21,7 @@ const ChatPage: React.FC = () => {
     getSessionId();
   }, []);
 
-  return (
+  return <ErrorBoundary fallback={<div>Oops! Something broke in ChatPage.</div>}>
     <div className="flex flex-column h-screen text-color">
       {/* Chat area (scrollable) */}
       <div className="flex-1 overflow-y-auto p-3">
@@ -34,7 +35,7 @@ const ChatPage: React.FC = () => {
         </div>
       )}
     </div>
-  );
+  </ErrorBoundary>;
 };
 
 export default ChatPage;
