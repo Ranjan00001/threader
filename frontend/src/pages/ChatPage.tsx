@@ -5,6 +5,7 @@ import { ThreadsState } from "@/slices/threadsSlice";
 import { useSelector } from "@/imports";
 import { useComposer } from "@/features/composer";
 import ErrorBoundary from "@/entities/ErrorBoundary";
+import { ChatProvider } from "@/entities/ChatProvider";
 
 const ChatPage: React.FC = () => {
   const { getSessionId } = useComposer();
@@ -22,19 +23,21 @@ const ChatPage: React.FC = () => {
   }, []);
 
   return <ErrorBoundary fallback={<div>Oops! Something broke in ChatPage.</div>}>
-    <div className="flex flex-column h-screen text-color">
-      {/* Chat area (scrollable) */}
-      <div className="flex-1 overflow-y-auto p-3">
-        {threadId && <ThreadPane threadId={threadId} />}
-      </div>
-
-      {/* Composer - fixed bottom center */}
-      {threadId && (
-        <div className="sticky bottom-0 flex p-3 px-8 bg-white">
-          <ComposerPane threadId={threadId} />
+    <ChatProvider>
+      <div className="flex flex-column h-screen text-color">
+        {/* Chat area (scrollable) */}
+        <div className="flex-1 overflow-y-auto p-3">
+          {threadId && <ThreadPane threadId={threadId} />}
         </div>
-      )}
-    </div>
+
+        {/* Composer - fixed bottom center */}
+        {threadId && (
+          <div className="sticky bottom-0 flex p-3 px-8 bg-white">
+            <ComposerPane threadId={threadId} />
+          </div>
+        )}
+      </div>
+    </ChatProvider>
   </ErrorBoundary>;
 };
 

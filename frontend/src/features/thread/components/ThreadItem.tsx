@@ -4,6 +4,7 @@ import { ThreadsState, Message } from "@/slices/threadsSlice";
 import SelectableMarkdown from "@/entities/SelectableMarkdown";
 import SelectionToolbar from "@/features/toolbar/components/SelectionToolbar";
 import { useThread } from "../hooks/useThread";
+import { useChat } from "@/entities/ChatProvider";
 interface Props {
   messageId: string;
 }
@@ -19,9 +20,11 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
     (state: { threads: ThreadsState }) => state.threads.messagesById[messageId]
   ) as Message;
 
+  const { setSelectedText, setActiveMessage } = useChat()
+
   const [selectionInfo, setSelectionInfo] = useState<SelectionInfo | null>(null);
 
-  const { handleCopy, handleCreateThread } = useThread(message.threadId);
+  const { handleCopy } = useThread(message.threadId);
 
   const isUser = message.author?.toLowerCase() === "user";
 
@@ -34,7 +37,10 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
         y={selectionInfo.y}
         text={selectionInfo.text}
         onCopy={handleCopy}
-        onCreateThread={(text) => handleCreateThread(text, message.id)}
+        onCreateThread={(text) => {
+          setSelectedText(text);
+          setActiveMessage(message);
+        }}
         onClose={() => setSelectionInfo(null)}
       />
     )}

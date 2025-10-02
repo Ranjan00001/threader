@@ -40,8 +40,8 @@ const SelectableMarkdown: React.FC<SelectableMarkdownProps> = ({
         console.log(selection, range, rect);
         onSelect?.({
             text: selectedText,
-            x: rect.left + rect.width / 2,
-            y: rect.top - 40, // TO adjust the toolbar height
+            x: rect.left,
+            y: rect.top - 400, // TO adjust the toolbar height
         })
     };
 
