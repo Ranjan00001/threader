@@ -22,6 +22,7 @@ export interface ThreadsState {
   threadsById: Record<string, Thread>;
   messagesById: Record<string, Message>;
   allThreadIds: string[];
+  expandedThreadId?: string;
 }
 
 const initialState: ThreadsState = {
@@ -48,8 +49,11 @@ const threadsSlice = createSlice({
       const thread = state.threadsById[msg.threadId];
       if (thread) thread.messages.push(msg.id);
     },
+    setExpandedThread: (state, action: PayloadAction<string | undefined>) => {
+      state.expandedThreadId = action.payload;
+    },
   },
 });
 
-export const { addThread, addMessage } = threadsSlice.actions;
+export const { addThread, addMessage, setExpandedThread } = threadsSlice.actions;
 export default threadsSlice.reducer;

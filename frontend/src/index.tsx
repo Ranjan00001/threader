@@ -10,7 +10,7 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { AppProvider } from "./entities/AppProvider";
-
+import "./index.css";
 const container = document.getElementById("root");
 const root = createRoot(container!);
 

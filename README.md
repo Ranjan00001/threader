@@ -32,7 +32,12 @@ shared/          # reusable ui + utils
 imports/         # centralized imports (ui, store, api, utils)
 
 ```
-- **Thread rendering**: Recursive (Reddit-style nesting).  
+- **Thread rendering**: Recursive (Reddit-style nesting). 
+  * **Thread A** (root message)
+      * **Reply A1**
+          * **Reply A1a**
+      * **Reply A2**
+  * **Thread B** (new root thread) 
 - **Streaming**: UI manages incremental updates.  
 - **Microfrontend**: Webpack Module Federation for independent features.  
 

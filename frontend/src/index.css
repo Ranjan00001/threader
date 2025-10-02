@@ -1,0 +1,7 @@
+
+
+/* For applying custom style to timeline */
+.p-timeline-event-opposite {
+    flex: none !important;
+    padding: 0 !important;
+}
