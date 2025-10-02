@@ -1,5 +1,5 @@
-import { useSelector } from "@/imports";
-import { ThreadsState, Thread } from "@/slices/threadsSlice";
+import { useDispatch, useSelector } from "@/imports";
+import { ThreadsState, Thread, createThreadWithMessage } from "@/slices/threadsSlice";
 import apiClient from "@/imports/api";
 
 export interface CreateThreadResponse {
@@ -8,7 +8,7 @@ export interface CreateThreadResponse {
 
 
 export const useThread = (threadId: string) => {
-
+  const dispatch = useDispatch();
   const thread = useSelector((state: { threads: ThreadsState }) => state.threads.threadsById[threadId]);
 
   const createThread = async (
@@ -24,10 +24,31 @@ export const useThread = (threadId: string) => {
     return resp.data;
   };
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).catch(console.error);
+  };
+
+  const handleCreateThread = async (query: string, id: string) => {
+    console.log("Creating new thread with:", query);
+    const response = await createThread(threadId, query);
+    const newThreadId = response.thread_id;
+    console.log("Created thread with ID:", newThreadId);
+    dispatch(
+        createThreadWithMessage({ threadId: newThreadId, initialMessage: {
+            id: `${id}-${newThreadId}`,
+            threadId: newThreadId,
+            author: "assistant",
+            text: "Hi there! How can I help you today?",
+            createdAt: new Date().toISOString(),
+          }
+        }))
+  };
+
   return {
     thread,
     createThread,
     getThread,
-  }
-
+    handleCopy,
+    handleCreateThread,
+  };
 };

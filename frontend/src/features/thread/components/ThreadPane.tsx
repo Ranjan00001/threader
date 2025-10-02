@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Card, Tooltip } from "@/imports";
 import ThreadTimeline from "./ThreadTimeline";
 import { useThread } from "../hooks/useThread";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/store";
+import { setExpandedThread } from "@/slices/threadsSlice";
 
 interface Props {
   threadId: string;
 }
 
 const ThreadPane: React.FC<Props> = ({ threadId }) => {
+  const dispatch = useDispatch();
   const { thread } = useThread(threadId);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const expandedThreadId = useSelector((state: RootState) => state.threads.expandedThreadId);
+
+  const isExpanded = expandedThreadId === thread.id;
+
+  const toggleExpand = () => {
+    dispatch(setExpandedThread(isExpanded ? undefined : thread.id));
+  };
 
   if (!thread) return <div>Thread not found</div>;
 
@@ -29,10 +39,10 @@ const ThreadPane: React.FC<Props> = ({ threadId }) => {
           icon={isExpanded ? "pi pi-angle-up" : "pi pi-angle-down"}
           className="toggle-thread py-0 w-1rem text-xl focus:shadow-none focus:outline-none"
           text
-          onClick={() => setIsExpanded((prev) => !prev)}
+          onClick={toggleExpand}
         />
 
-        {isExpanded && (
+        {isExpanded ? (
           <>
             {/* Timeline for messages */}
             <ThreadTimeline threadId={thread.id} />
@@ -46,8 +56,9 @@ const ThreadPane: React.FC<Props> = ({ threadId }) => {
               </div>
             )}
           </>
+        ) : (
+          <div> ... </div>
         )}
-        {!isExpanded && <div> ... </div>}
       </div>
     </Card>
   );

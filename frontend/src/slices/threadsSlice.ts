@@ -52,8 +52,28 @@ const threadsSlice = createSlice({
     setExpandedThread: (state, action: PayloadAction<string | undefined>) => {
       state.expandedThreadId = action.payload;
     },
+    createThreadWithMessage: (
+      state,
+      action: PayloadAction<{ threadId: string; initialMessage: Message }>
+    ) => {
+      const { threadId, initialMessage } = action.payload;
+
+      // create thread
+      state.threadsById[threadId] = {
+        id: threadId,
+        messages: [initialMessage.id],
+        children: [],
+      };
+      state.allThreadIds.push(threadId);
+
+      // add initial message
+      state.messagesById[initialMessage.id] = initialMessage;
+
+      // expand new thread
+      state.expandedThreadId = threadId;
+    },
   },
 });
 
-export const { addThread, addMessage, setExpandedThread } = threadsSlice.actions;
+export const { addThread, addMessage, setExpandedThread, createThreadWithMessage } = threadsSlice.actions;
 export default threadsSlice.reducer;

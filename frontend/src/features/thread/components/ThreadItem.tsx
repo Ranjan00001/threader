@@ -3,8 +3,15 @@ import { useSelector } from "@/imports";
 import { ThreadsState, Message } from "@/slices/threadsSlice";
 import SelectableMarkdown from "@/entities/SelectableMarkdown";
 import SelectionToolbar from "@/features/toolbar/components/SelectionToolbar";
+import { useThread } from "../hooks/useThread";
 interface Props {
   messageId: string;
+}
+
+interface SelectionInfo {
+  text: string;
+  x: number;
+  y: number;
 }
 
 const ThreadItem: React.FC<Props> = ({ messageId }) => {
@@ -12,24 +19,13 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
     (state: { threads: ThreadsState }) => state.threads.messagesById[messageId]
   ) as Message;
 
-  const [selectionInfo, setSelectionInfo] = useState<{
-    text: string;
-    x: number;
-    y: number;
-  } | null>(null);
+  const [selectionInfo, setSelectionInfo] = useState<SelectionInfo | null>(null);
 
-  if (!message) return null;
+  const { handleCopy, handleCreateThread } = useThread(message.threadId);
 
   const isUser = message.author?.toLowerCase() === "user";
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).catch(console.error);
-  };
-
-  const handleCreateThread = (query: string) => {
-    // TODO: wire with your threadsSlice / service
-    console.log("Creating new thread with:", query);
-  };
+  if (!message) return null;
 
   return <>
     {selectionInfo && (
@@ -38,7 +34,7 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
         y={selectionInfo.y}
         text={selectionInfo.text}
         onCopy={handleCopy}
-        onCreateThread={handleCreateThread}
+        onCreateThread={(text) => handleCreateThread(text, message.id)}
         onClose={() => setSelectionInfo(null)}
       />
     )}
