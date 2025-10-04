@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { ThreadPane } from "@/features/thread";
 import { ComposerPane } from "@/features/composer";
 import { ThreadsState } from "@/slices/threadsSlice";
 import { useSelector } from "@/imports";

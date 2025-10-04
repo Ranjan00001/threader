@@ -1,11 +1,12 @@
 import React from "react";
-import { Card, Tooltip, InputTextarea, Button } from "@/imports";
-import { ThreadTimeline } from "@/features/thread";
+import { Card, InputTextarea, Button } from "@/imports";
+import { ThreadHeaderPane, ThreadTimeline } from "@/features/thread";
 import { useThread } from "@/features/thread";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useComposer } from "../hooks/useComposer";
 import { useChat } from "@/entities/ChatProvider";
+import InputPane from "@/features/inputbox/components/InputPane";
 
 interface Props {
   threadId: string;
@@ -37,19 +38,9 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
   };
 
   return (
-    <div className="flex flex-column h-full w-full" style={{ maxWidth: "1000px" }}>
+    <div className="flex flex-column h-screen w-full" style={{ maxWidth: "1000px" }}>
       <Card className="flex flex-column overflow-y-auto flex-1 surface-card shadow-2 border-round-lg">
-        <div className="flex items-center justify-between mb-2">
-          <span
-            className="pi pi-info-circle text-500 cursor-pointer"
-            id={`thread-info-${thread.id}`}
-          />
-          <Tooltip
-            target={`#thread-info-${thread.id}`}
-            content={`Thread ID: ${thread.id}`}
-            position="top"
-          />
-        </div>
+        <ThreadHeaderPane threadId={thread.id} />
 
         <ThreadTimeline threadId={thread.id} />
         <div className="mb-8"></div>
