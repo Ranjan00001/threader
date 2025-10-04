@@ -6,6 +6,7 @@ import SelectionToolbar from "@/features/toolbar/components/SelectionToolbar";
 import { useThread } from "../hooks/useThread";
 import { useChat } from "@/entities/ChatProvider";
 import ErrorBoundary from "@/entities/ErrorBoundary";
+
 interface Props {
   messageId: string;
 }
@@ -27,12 +28,26 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
 
   const { handleCopy } = useThread(message.threadId);
 
-  const isUser = message.author?.toLowerCase() === "user";
-
   if (!message) return null;
 
-  return <ErrorBoundary>
-    {selectionInfo && (
+  const isUser = message.author?.toLowerCase() === "user";
+
+  const alignmentClass = isUser ? "justify-content-end" : "justify-content-start";
+  const bubbleColor = isUser ? "lavenderblush" : "mintcream";
+
+  const renderContent = () =>
+    isUser ? (
+      <div style={{ padding: "12px", whiteSpace: "pre-wrap" }}>{message.text}</div>
+    ) : (
+      <SelectableMarkdown
+        content={message.text}
+        onSelect={setSelectionInfo}
+        className="markdown-body"
+      />
+    );
+
+  const renderToolbar = () =>
+    selectionInfo && (
       <SelectionToolbar
         x={selectionInfo.x}
         y={selectionInfo.y}
@@ -44,27 +59,24 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
         }}
         onClose={() => setSelectionInfo(null)}
       />
-    )}
-    <div
-      className={`flex w-full mb-3 ${isUser ? "justify-content-end" : "justify-content-start"
-        }`}
-    >
-      <div
-        className={`px-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap relative`}
-        style={{ backgroundColor: isUser ? "lavenderblush" : "mintcream" }}
-      >
-        <small className="block my-1 font-medium opacity-70">
-          {message.author}
-        </small>
+    );
 
-        <SelectableMarkdown
-          content={message.text}
-          onSelect={setSelectionInfo}
-          className="markdown-body"
-        />
+  return (
+    <ErrorBoundary>
+      {renderToolbar()}
+      <div className={`flex w-full mb-3 ${alignmentClass}`}>
+        <div
+          className={`px-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap relative`}
+          style={{ backgroundColor: bubbleColor }}
+        >
+          <small className="block my-1 font-medium opacity-70">
+            {message.author}
+          </small>
+          {renderContent()}
+        </div>
       </div>
-    </div>
-  </ErrorBoundary>;
+    </ErrorBoundary>
+  );
 };
 
 export default ThreadItem;
