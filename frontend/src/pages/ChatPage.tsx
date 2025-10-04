@@ -24,18 +24,8 @@ const ChatPage: React.FC = () => {
 
   return <ErrorBoundary fallback={<div>Oops! Something broke in ChatPage.</div>}>
     <ChatProvider>
-      <div className="flex flex-column h-screen text-color">
-        {/* Chat area (scrollable) */}
-        <div className="flex-1 overflow-y-auto p-3">
-          {threadId && <ThreadPane threadId={threadId} />}
-        </div>
-
-        {/* Composer - fixed bottom center */}
-        {threadId && (
-          <div className="sticky bottom-0 flex p-3 px-8 bg-white">
-            <ComposerPane threadId={threadId} />
-          </div>
-        )}
+      <div className="flex flex-column align-items-center h-screen text-color">
+        <ComposerPane threadId={threadId} />
       </div>
     </ChatProvider>
   </ErrorBoundary>;
