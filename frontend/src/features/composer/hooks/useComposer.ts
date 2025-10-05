@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addMessage } from "@/slices/threadsSlice";
 import { generateId } from "@/imports";
@@ -25,6 +25,8 @@ interface ComposerHookResult {
 
 export const useComposer = (threadId: string = ""): ComposerHookResult => {
   const [text, setText] = useState("");
+
+  const stopRef = useRef(false);
 
   const { loading, post } = useApi();
   const toast = useToast();
@@ -56,36 +58,55 @@ export const useComposer = (threadId: string = ""): ComposerHookResult => {
 
   const handleSubmit = async () => {
     if (!text.trim()) return;
-    reset();  // By the time this state will ve cleared, the redux would have been already updated
+
+    stopRef.current = false;
+    const currentText = text;
+    reset();
 
     if (selectedText) {
-      await handleCreateThread(text, threadId, selectedText);
-      setSelectedText(undefined);
+      if (!stopRef.current) {
+        await handleCreateThread(currentText, threadId, selectedText);
+        setSelectedText(undefined);
+      }
     } else {
       dispatch(
         addMessage({
           id: generateId(),
           threadId,
           author: "user",
-          text,
+          text: currentText,
           createdAt: new Date().toISOString(),
         })
       );
 
-      const response = await sendMessage(threadId, text);
-      dispatch(
-        addMessage({
-          id: generateId(),
-          threadId,
-          author: "assistant",
-          text: response.response,
-          createdAt: new Date().toISOString(),
-        })
-      );
+      const response = await sendMessage(threadId, currentText);
+
+      if (stopRef.current) {
+        dispatch(
+          addMessage({
+            id: generateId(),
+            threadId,
+            author: "system",
+            text: "Response generation was cancelled.",
+            createdAt: new Date().toISOString(),
+          })
+        );
+      } else {
+          dispatch(
+            addMessage({
+              id: generateId(),
+              threadId,
+              author: "assistant",
+              text: response.response,
+              createdAt: new Date().toISOString(),
+            })
+          );
+      }
     }
   };
 
   const handleCancel = () => {
+    stopRef.current = true;
     setSelectedText(undefined);
     reset();
   };
