@@ -14,8 +14,8 @@ interface Props {
 
 const ComposerPane: React.FC<Props> = ({ threadId }) => {
   const { thread } = useThread(threadId);
-  const { text, reset, handleChange, handleSend } = useComposer(threadId);
-  const { selectedText, setSelectedText, handleCreateThread } = useChat();
+  const { loading: sending, text, reset, handleChange, handleSend } = useComposer(threadId);
+  const { loading, selectedText, setSelectedText, handleCreateThread } = useChat();
 
   const expandedThreadId = useSelector(
     (state: RootState) => state.threads.expandedThreadId
@@ -28,14 +28,19 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
     if (!text.trim()) return;
 
     if (selectedText) {
+      reset();
       await handleCreateThread(text, threadId, selectedText);
       setSelectedText(undefined);
-      reset();
     } else {
-      await handleSend(threadId, text);
       reset();
+      await handleSend(threadId, text);
     }
   };
+
+  const handleCancel = () => {
+    setSelectedText(undefined);
+    reset();
+  }
 
   return (
     <div className="composer-pane-container flex flex-column h-screen w-full" style={{ maxWidth: "1000px" }}>
@@ -46,11 +51,11 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
         <div className="mb-8"></div>
       </Card>
 
-      <div className="composer-pane-input-container sticky bottom-0 flex flex-column items-center gap-2 p-3 px-8 border-t">
+      <div className="composer-pane-input-container sticky bottom-0 flex flex-column items-center p-3 px-8 border-t">
         {selectedText && (
-          <div className="composer-pane-selected-text bg-gray-900 text-sm border-l-4 border-blue-500 px-3 py-2 w-full max-w-3xl">
+          <q className="composer-pane-selected-text bg-white text-sm border-round-top-3xl px-3 pt-2 ml-3 mr-2">
             {selectedText}
-          </div>
+          </q>
         )}
         <div className="composer-pane-input-wrapper flex align-items-center gap-2 w-full max-w-3xl shadow-2 border-round-3xl bg-white">
           <Button
@@ -71,12 +76,13 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
             autoResize
             placeholder="Type your message..."
             className="composer-pane-textarea flex-1 p-inputtext-lg w-full max-h-10rem overflow-y-auto border-none shadow-none"
+            disabled={sending || loading}
           />
           <Button
-            tooltip="Send"
-            icon="pi pi-send"
-            className="composer-pane-send-btn p-button-rounded p-button-primary mr-3"
-            onClick={handleSubmit}
+            tooltip={sending || loading ? "Cancel" : "Send"}
+            icon={`pi ${(sending || loading) ? "pi-stop" : "pi-send"}`}
+            className={`composer-pane-send-btn p-button-rounded mr-3 ${(sending || loading) ? "p-button-secondary" : "p-button-primary"}`}
+            onClick={(sending || loading) ? handleCancel : handleSubmit}
           />
         </div>
       </div>
