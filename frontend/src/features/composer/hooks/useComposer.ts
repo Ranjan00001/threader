@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addMessage, createThreadWithMessage } from "@/slices/threadsSlice";
 import { generateId } from "@/imports";
-import apiClient from "@/imports/api";
+import { useApi } from "@/entities/useApi";
+import { API_ENDPOINTS } from "@/imports/constants/endpoints";
 import { CHAT_STARTED, ERROR_MESSAGE } from "@/shared/utils/constant";
 import { useToast } from "@/entities/useToast";
 
@@ -17,15 +18,17 @@ export interface SendMessageResponse {
 export const useComposer = (threadId: string = "") => {
   const [text, setText] = useState("");
 
+  const { loading, post } = useApi();
   const toast = useToast();
   const dispatch = useDispatch();
 
   const startChat = async (): Promise<StartChatResponse> => {
     try {
-      const resp = await apiClient.post("/chat/start");
+      const resp = await post<StartChatResponse>(API_ENDPOINTS.CHAT.START);
       toast?.success(CHAT_STARTED);
-      return resp.data;
+      return resp;
     } catch (error) {
+      toast?.error(ERROR_MESSAGE);
       console.error(error);
     }
     return { session_id: "" };
@@ -36,8 +39,8 @@ export const useComposer = (threadId: string = "") => {
     message: string
   ): Promise<SendMessageResponse> => {
     try {
-      const resp = await apiClient.post(`/chat/send/${sessionId}`, { message });
-      return resp.data;
+      const resp = await post<SendMessageResponse>(`/chat/send/${sessionId}`, { message });
+      return resp;
     } catch (error) {
       toast?.error(ERROR_MESSAGE);
       console.error(error);
@@ -96,6 +99,7 @@ export const useComposer = (threadId: string = "") => {
   };
 
   return {
+    loading,
     text,
     reset,
     startChat,

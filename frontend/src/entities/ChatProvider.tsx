@@ -2,6 +2,9 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { createThreadWithMessage, addMessage, generateId } from "@/imports";
 import apiClient from "@/imports/api";
+import { useToast } from "@/entities/useToast";
+import { useApi } from "@/entities/useApi";
+import { API_ENDPOINTS } from "@/imports/constants/endpoints";
 
 // ----------------- Types -----------------
 interface Message {
@@ -22,6 +25,8 @@ interface CreateThreadResponse {
 }
 
 interface ChatContextType {
+    loading: boolean;
+
     selectedText?: string;
     setSelectedText: (text?: string) => void;
 
@@ -45,6 +50,9 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const dispatch = useDispatch();
 
+    const toast = useToast();
+    const { loading, post } = useApi();
+
     const [selectedText, setSelectedText] = useState<string>();
     const [activeThreadId, setActiveThreadId] = useState<string>();
     const [activeMessage, setActiveMessage] = useState<Message>();
@@ -56,13 +64,22 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         selectedText?: string,
         context?: string
     ): Promise<CreateThreadResponse> => {
-        const resp = await apiClient.post("/thread/create", {
-            parentThreadId,
-            query,
-            context,
-            selectedText,
-        });
-        return resp.data;
+        try {
+            const resp = await post<CreateThreadResponse>(
+                API_ENDPOINTS.THREAD.CREATE,
+                {
+                    parentThreadId,
+                    query,
+                    context,
+                    selectedText,
+                }
+            );
+            return resp;
+        } catch (error) {
+            toast?.error("Failed to create thread. Please try again.");
+            console.error("Error creating thread:", error);
+            throw error;
+        }
     };
 
     // ----------------- Handler -----------------
@@ -118,6 +135,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     return (
         <ChatContext.Provider
             value={{
+                loading,
                 selectedText,
                 setSelectedText,
                 activeThreadId,

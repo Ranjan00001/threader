@@ -5,9 +5,10 @@ import { useSelector } from "@/imports";
 import { useComposer } from "@/features/composer";
 import ErrorBoundary from "@/entities/ErrorBoundary";
 import { ChatProvider } from "@/entities/ChatProvider";
+import { ProgressSpinner } from "@/imports";
 
 const ChatPage: React.FC = () => {
-  const { getSessionId } = useComposer();
+  const { loading, getSessionId } = useComposer();
   const openThreadId = useSelector(
     (state: { ui: { openThreadId?: string } }) => state.ui.openThreadId
   );
@@ -24,7 +25,7 @@ const ChatPage: React.FC = () => {
   return <ErrorBoundary fallback={<div>Oops! Something broke in ChatPage.</div>}>
     <ChatProvider>
       <div className="chatpage flex flex-column align-items-center h-screen text-color">
-        <ComposerPane threadId={threadId} />
+        {loading ? <ProgressSpinner /> : <ComposerPane threadId={threadId} />}
       </div>
     </ChatProvider>
   </ErrorBoundary>;

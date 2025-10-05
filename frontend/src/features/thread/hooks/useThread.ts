@@ -1,13 +1,12 @@
-import { useDispatch, useSelector } from "@/imports";
-import { ThreadsState, createThreadWithMessage } from "@/slices/threadsSlice";
-import apiClient from "@/imports/api";
-
-export interface CreateThreadResponse {
-  thread_id: string;
-}
+import { useSelector } from "@/imports";
+import { ThreadsState } from "@/slices/threadsSlice";
+import { useApi } from "@/entities/useApi";
+import { API_ENDPOINTS } from "@/imports/constants/endpoints";
+import { useToast } from "@/entities/useToast";
 
 export const useThread = (threadId: string) => {
-  const dispatch = useDispatch();
+  const { get, post, loading, error } = useApi();
+  const toast = useToast();
   const thread = useSelector(
     (state: { threads: ThreadsState }) => state.threads.threadsById[threadId]
   );
@@ -17,19 +16,31 @@ export const useThread = (threadId: string) => {
     query: string,
     context?: string,
     selectedText?: string
-  ): Promise<CreateThreadResponse> => {
-    const resp = await apiClient.post("/thread/create", {
-      parentThreadId,
-      query,
-      context,
-      selectedText,
-    });
-    return resp.data;
+  ) => {
+    try {
+      const resp = await post(API_ENDPOINTS.THREAD.CREATE_WITH_CONTEXT, {
+        parentThreadId,
+        query,
+        context,
+        selectedText,
+      });
+      return resp;
+    } catch (error) {
+      toast?.error("Failed to create thread. Please try again.");
+      console.error("Error creating thread:", error);
+      throw error;
+    }
   };
 
   const getThread = async (threadId: string) => {
-    const resp = await apiClient.get(`/thread/${threadId}`);
-    return resp.data;
+    try {
+      const resp = await get(API_ENDPOINTS.THREAD.GET_BY_ID(threadId));
+      return resp;
+    } catch (error) {
+      toast?.error("Failed to fetch thread. Please try again.");
+      console.error("Error fetching thread:", error);
+      throw error;
+    }
   };
 
   const handleCopy = (text: string) => {
@@ -39,6 +50,8 @@ export const useThread = (threadId: string) => {
 
   return {
     thread,
+    loading,
+    error,
     createThread,
     getThread,
     handleCopy,
