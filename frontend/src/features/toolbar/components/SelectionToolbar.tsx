@@ -18,10 +18,10 @@ const SelectionToolbar: React.FC<Props> = ({
   onCopy,
   onClose,
 }) => {
-  console.log(window.scrollY);
+
   return (
     <div
-      className="absolute flex z-5 gap-2 shadow-3 border-round-xl"
+      className="toolbar-selection-container absolute flex z-5 gap-2 shadow-3 border-round-xl"
       style={{
         top: y,
         left: x,
@@ -33,7 +33,7 @@ const SelectionToolbar: React.FC<Props> = ({
         icon="pi pi-plus"
         tooltip="Create Thread"
         tooltipOptions={{ position: "top" }}
-        className="p-button-sm p-button-text p-button-rounded"
+        className="toolbar-selection-create-btn p-button-sm p-button-text p-button-rounded"
         onClick={() => {
           onCreateThread(text);
           onClose();
@@ -43,7 +43,7 @@ const SelectionToolbar: React.FC<Props> = ({
         icon="pi pi-copy"
         tooltip="Copy"
         tooltipOptions={{ position: "top" }}
-        className="p-button-sm p-button-text p-button-rounded"
+        className="toolbar-selection-copy-btn p-button-sm p-button-text p-button-rounded"
         onClick={() => {
           onCopy(text);
           onClose();

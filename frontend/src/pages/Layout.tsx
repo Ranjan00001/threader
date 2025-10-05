@@ -32,28 +32,28 @@ const Layout: React.FC<LayoutProps> = ({
     const isOverlay = sidebarState === "overlay";
 
     const start = (
-        <div className="flex align-items-center gap-2">
+        <div className="layout-start-menubar flex align-items-center gap-2">
             {/* Mobile toggle (overlay) */}
             <Button
                 icon="pi pi-bars"
-                className="p-button-text p-button-plain md:hidden"
+                className="layout-mobile-toggle-button p-button-text p-button-plain md:hidden"
                 onClick={openSidebarMobile}
             />
 
             {/* Desktop toggle (collapse/expand) */}
             <Button
                 icon={isCollapsed ? "pi pi-angle-right" : "pi pi-angle-left"}
-                className="p-button-text p-button-plain hidden md:flex"
+                className="layout-desktop-toggle-button p-button-text p-button-plain hidden md:flex"
                 onClick={toggleSidebarDesktop}
             />
         </div>
     );
 
     const end = (
-        <div className="flex align-items-center gap-2">
+        <div className="layout-end-menubar flex align-items-center gap-2">
             <Button
                 icon={theme === "light" ? "pi pi-moon" : "pi pi-sun"}
-                className="p-button-text"
+                className="dark-toggle-menubar p-button-text"
                 onClick={toggleTheme}
             // tooltip={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
             // tooltipOptions={{ position: "bottom" }}
@@ -62,27 +62,27 @@ const Layout: React.FC<LayoutProps> = ({
     );
 
     return (
-        <div className="flex flex-column h-screen surface-ground text-color">
+        <div className="layout-container flex flex-column h-screen surface-ground text-color">
             {/* Header / Menubar */}
             <Menubar
                 start={start}
                 end={end}
                 model={items}
-                className="shadow-1 surface-card"
+                className="layout-menubar shadow-1 surface-card"
             >
-                <span className="font-bold ml-2">{headerTitle}</span>
+                <span className="layout-header-title font-bold ml-2">{headerTitle}</span>
             </Menubar>
 
-            <div className="flex overflow-hidden">
+            <div className="layout-main-container flex overflow-hidden">
                 {/* Desktop Sidebar (collapsible) */}
                 {sidebarContent && (
                     <aside
-                        className={`hidden md:flex flex-column surface-card border-right-1 border-300 transition-all transition-duration-300 ${isCollapsed ? "w-4rem" : "w-16rem p-3"
+                        className={`layout-desktop-sidebar hidden md:flex flex-column surface-card border-right-1 border-300 transition-all transition-duration-300 ${isCollapsed ? "w-4rem" : "w-16rem p-3"
                             } overflow-y-auto`}
                     >
                         {!isCollapsed && (
                             <>
-                                <h4 className="mb-3 text-sm text-500">Chat History</h4>
+                                <h4 className="layout-sidebar-title mb-3 text-sm text-500">Chat History</h4>
                                 {sidebarContent}
                             </>
                         )}
@@ -95,19 +95,19 @@ const Layout: React.FC<LayoutProps> = ({
                     onHide={closeSidebarMobile}
                     modal
                     dismissable
-                    className="w-16rem"
+                    className="layout-mobile-sidebar w-16rem"
                 >
-                    <h4 className="mb-3 text-sm text-500">Chat History</h4>
+                    <h4 className="layout-sidebar-title mb-3 text-sm text-500">Chat History</h4>
                     {sidebarContent}
                 </Sidebar>
 
                 {/* Main Content */}
-                <main className="flex-1 p-3">{children}</main>
+                <main className="layout-main-content flex-1 p-3">{children}</main>
             </div>
 
             {/* Footer */}
             {footer && (
-                <footer className="surface-card border-top-1 border-300 shadow-1 p-3">
+                <footer className="layout-footer surface-card border-top-1 border-300 shadow-1 p-3">
                     {footer}
                 </footer>
             )}

@@ -8,9 +8,9 @@ interface Props {
 const ThreadHeaderPane: React.FC<Props> = ({ threadId }) => {
 
   return (
-    <div className="flex items-center justify-between mb-2">
+    <div className="thread-header-container flex items-center justify-between mb-2">
       <span
-        className="pi pi-info-circle text-500 cursor-pointer"
+        className="thread-header-info-icon pi pi-info-circle text-500 cursor-pointer"
         id={`thread-info-${threadId}`}
       />
       <Tooltip

@@ -37,12 +37,12 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
 
   const renderContent = () =>
     isUser ? (
-      <div style={{ padding: "12px", whiteSpace: "pre-wrap" }}>{message.text}</div>
+      <div className="thread-item-user-content" style={{ padding: "12px", whiteSpace: "pre-wrap" }}>{message.text}</div>
     ) : (
       <SelectableMarkdown
         content={message.text}
         onSelect={setSelectionInfo}
-        className="markdown-body"
+        className="thread-item-markdown markdown-body"
       />
     );
 
@@ -64,12 +64,12 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
   return (
     <ErrorBoundary>
       {renderToolbar()}
-      <div className={`flex w-full mb-3 ${alignmentClass}`}>
+      <div className={`thread-item-container flex w-full mb-3 ${alignmentClass}`}>
         <div
-          className={`px-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap relative`}
+          className={`thread-item-bubble px-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap relative`}
           style={{ backgroundColor: bubbleColor }}
         >
-          <small className="block my-1 font-medium opacity-70">
+          <small className="thread-item-author block my-1 font-medium opacity-70">
             {message.author}
           </small>
           {renderContent()}

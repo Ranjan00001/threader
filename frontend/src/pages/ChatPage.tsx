@@ -23,7 +23,7 @@ const ChatPage: React.FC = () => {
 
   return <ErrorBoundary fallback={<div>Oops! Something broke in ChatPage.</div>}>
     <ChatProvider>
-      <div className="flex flex-column align-items-center h-screen text-color">
+      <div className="chatpage flex flex-column align-items-center h-screen text-color">
         <ComposerPane threadId={threadId} />
       </div>
     </ChatProvider>
