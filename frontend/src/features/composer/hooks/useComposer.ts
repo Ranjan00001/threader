@@ -27,12 +27,12 @@ export const useComposer = (threadId: string = ""): ComposerHookResult => {
   const [text, setText] = useState("");
 
   const stopRef = useRef(false);
+  const dispatch = useDispatch();
 
   const { loading, post } = useApi();
   const toast = useToast();
-  const dispatch = useDispatch();
   const { selectedText, setSelectedText } = useChat();
-  const { thread, handleCreateThread } = useThread(threadId);
+  const { thread, loading: creating, handleCreateThread } = useThread(threadId);
 
   
 

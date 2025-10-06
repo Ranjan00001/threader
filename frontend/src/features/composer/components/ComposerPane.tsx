@@ -1,8 +1,6 @@
 import React from "react";
 import { Card, InputTextarea, Button } from "@/imports";
 import { ThreadHeaderPane, ThreadTimeline } from "@/features/thread";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 import { useComposer } from "../hooks/useComposer";
 import InputPane from "@/features/inputbox/components/InputPane";
 
