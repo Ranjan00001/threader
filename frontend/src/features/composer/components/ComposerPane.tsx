@@ -35,7 +35,7 @@ const ComposerPane: React.FC<Props> = ({ threadId }) => {
         <div className="mb-8"></div>
       </Card>
 
-      <div className="composer-pane-input-container sticky bottom-0 flex flex-column items-center bg-white px-8">
+      <div className="composer-pane-input-container sticky bottom-0 flex flex-column items-center bg-white lg:px-8">
         {selectedText && (
           <q className="composer-pane-selected-text bg-white text-sm border-round-top-3xl px-3 pt-2 ml-3 mr-2">
             {selectedText}

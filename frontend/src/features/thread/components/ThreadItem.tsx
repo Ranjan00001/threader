@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "@/imports";
+import { Button, useSelector } from "@/imports";
 import { ThreadsState, Message } from "@/slices/threadsSlice";
 import SelectableMarkdown from "@/entities/SelectableMarkdown";
 import SelectionToolbar from "@/features/toolbar/components/SelectionToolbar";
@@ -30,20 +30,20 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
 
   if (!message) return null;
 
-  const isUser = message.author?.toLowerCase() === "user";
+  const isAssistant = message.author?.toLowerCase() === "assistant";
 
-  const alignmentClass = isUser ? "justify-content-end" : "justify-content-start";
-  const bubbleColor = isUser ? "lavenderblush" : "mintcream";
+  const alignmentClass = isAssistant ? "justify-content-start" : "justify-content-end";
+  const bubbleColor = isAssistant ? "mintcream" : "lavenderblush";
 
   const renderContent = () =>
-    isUser ? (
-      <div className="thread-item-user-content" style={{ padding: "12px", whiteSpace: "pre-wrap" }}>{message.text}</div>
-    ) : (
+    isAssistant ? (
       <SelectableMarkdown
         content={message.text}
         onSelect={setSelectionInfo}
-        className="thread-item-markdown markdown-body"
+        className="thread-item-markdown markdown-body pr-3"
       />
+    ) : (
+      <div className="thread-item-user-content" style={{ padding: "12px", whiteSpace: "pre-wrap" }}>{message.text}</div>
     );
 
   const renderToolbar = () =>
@@ -66,12 +66,24 @@ const ThreadItem: React.FC<Props> = ({ messageId }) => {
       {renderToolbar()}
       <div className={`thread-item-container flex w-full mb-3 ${alignmentClass}`}>
         <div
-          className={`thread-item-bubble px-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap relative`}
+          className={`thread-item-bubble pl-3 border-round-lg shadow-1 max-w-lg whitespace-pre-wrap relative`}
           style={{ backgroundColor: bubbleColor }}
         >
-          <small className="thread-item-author block my-1 font-medium opacity-70">
-            {message.author}
-          </small>
+          <div className="thread-header flex justify-content-between">
+            <small className="thread-item-author block my-1 font-medium opacity-70">
+              {message.author}
+            </small>
+            <div
+              className="top-0 right-0 shadow-1 pt-1 px-2"
+            >
+              <Button
+                icon="pi pi-copy"
+                className="thread-item-copy-btn p-button-sm p-button-text p-button-secondary p-0 justify-content-end"
+                style={{ width: 'fit-content', height: 'fit-content' }}
+                onClick={() => handleCopy(message.text)}
+              />
+            </div>
+          </div>
           {renderContent()}
         </div>
       </div>
