@@ -64,14 +64,21 @@ const Layout: React.FC<LayoutProps> = ({
     return (
         <div className="layout-container flex flex-column h-screen surface-ground text-color">
             {/* Header / Menubar */}
-            <Menubar
+            {/* <Menubar
                 start={start}
                 end={end}
                 model={items}
                 className="layout-menubar shadow-1 surface-card"
             >
                 <span className="layout-header-title font-bold ml-2">{headerTitle}</span>
-            </Menubar>
+            </Menubar> */}
+            <header className="layout-header flex align-items-center justify-content-between">
+                <div className="flex align-items-center">
+                    {start}
+                    <span className="layout-header-title font-bold ml-2">{headerTitle}</span>
+                </div>
+                {end}
+            </header>
 
             <div className="layout-main-container flex overflow-hidden">
                 {/* Desktop Sidebar (collapsible) */}
